@@ -1,0 +1,97 @@
+Problem-01
+
+import java.util.*;
+import java.util.Scanner;
+
+public class ParenMatch {
+    public static void main(String[] args) {
+        Stack<Character> s = new Stack<>();
+        Scanner scan = new Scanner(System.in);
+
+        System.out.println("\nParenthesis Matching");
+        System.out.print("Enter a parenthesized expression: ");
+        String line = scan.nextLine();
+
+        boolean error = false;      // flag for mismatch
+        int position = 0;           // position where error occurs
+
+        for (int i = 0; i < line.length(); i++) {
+            char ch = line.charAt(i);
+            if (ch == '(') {
+                s.push(ch);
+            } else if (ch == ')') {
+                if (s.isEmpty()) {  // extra right parenthesis
+                    error = true;
+                    position = i;
+                    System.out.println("Too many right parentheses.");
+                    System.out.println("Error at: " + line.substring(0, i + 1));
+                    break;
+                } else {
+                    s.pop();  // match left parenthesis
+                }
+            }
+        }
+
+        if (!error) {
+            if (s.isEmpty()) {
+                System.out.println("Parentheses match!");
+            } else {
+                System.out.println("Too many left parentheses.");
+                System.out.println("Error at: " + line);
+            }
+        }
+    }
+}
+
+
+
+
+
+
+Problem-02
+
+import java.util.*;
+import static java.lang.Math.*;
+
+public class Evaluate {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        System.out.print("Enter a fully parenthesized expression: ");
+        String input = scan.nextLine();
+
+        Stack<Double> values = new Stack<>();
+        Stack<String> ops = new Stack<>();
+
+        String[] tokens = input.split("\\s+");
+
+        for (String token : tokens) {
+            if (token.equals("(")) {
+                // do nothing
+            } else if (token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/") || token.equals("sqrt")) {
+                ops.push(token);
+            } else if (token.equals(")")) {
+                String op = ops.pop();
+                if (op.equals("sqrt")) {
+                    double val = values.pop();
+                    values.push(sqrt(val));
+                } else {
+                    double val2 = values.pop();
+                    double val1 = values.pop();
+                    switch (op) {
+                        case "+": values.push(val1 + val2); break;
+                        case "-": values.push(val1 - val2); break;
+                        case "*": values.push(val1 * val2); break;
+                        case "/": values.push(val1 / val2); break;
+                    }
+                }
+            } else {
+                // token is a number
+                values.push(Double.parseDouble(token));
+            }
+        }
+
+        System.out.println(values.pop());
+    }
+}
+
+
